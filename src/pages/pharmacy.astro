@@ -1,0 +1,57 @@
+---
+import LegacyLayout from "../layouts/LegacyLayout.astro";
+import { RESEARCH_PAGE_QUERY, SITE_SETTINGS_QUERY } from "../lib/queries";
+import { renderPortableText } from "../lib/richText";
+import { client, urlFor } from "../lib/sanity";
+
+const [settings, page] = await Promise.all([
+  client.fetch(SITE_SETTINGS_QUERY),
+  client.fetch(RESEARCH_PAGE_QUERY)
+]);
+---
+
+<LegacyLayout settings={settings} navItems={settings.researchNavItems}>
+  <section id="writing" class="">
+    <div>
+      <div class="col-md-12">
+        <h2 class="text-center hidden-sm">{page.title}</h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="col-md-12 align-center">
+        <Fragment set:html={renderPortableText(page.intro, { paragraphClass: "close-up-copy" })} />
+        <div class=" col-sm-8 col-sm-push-2 thesis-poster-container">
+          <img class="img-responsive thesis-poster" src={urlFor(page.posterImage).url()} alt={page.posterImage?.alt ?? ""} />
+        </div>
+
+        <div class="clearfix"></div>
+
+        {page.sections.map((section: any) => (
+          <>
+            <hr />
+            <div class="col-2-flex">
+              <div class="close-up-copy col-md-4">
+                {section.title}
+              </div>
+              <div class="col-md-8">
+                <ul class=" pub-list">
+                  {section.entries.map((entry: any) => (
+                    <li>
+                      {entry.description}
+                      {entry.linkUrl && entry.linkLabel && (
+                        <p>
+                          <a class="ex-link" href={entry.linkUrl}>{entry.linkLabel}</a>
+                        </p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </>
+        ))}
+      </div>
+
+      <p class="pnum hidden">ii.</p>
+    </div>
+  </section>
+</LegacyLayout>

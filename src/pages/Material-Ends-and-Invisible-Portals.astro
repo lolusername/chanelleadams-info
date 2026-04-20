@@ -1,0 +1,104 @@
+---
+import EssayLayout from "../layouts/EssayLayout.astro";
+import { ESSAY_PAGE_QUERY, SITE_SETTINGS_QUERY } from "../lib/queries";
+import { renderPortableText } from "../lib/richText";
+import { client, urlFor } from "../lib/sanity";
+
+const [settings, page] = await Promise.all([
+  client.fetch(SITE_SETTINGS_QUERY),
+  client.fetch(ESSAY_PAGE_QUERY)
+]);
+
+const heroSrc = urlFor(page.heroImage).url();
+---
+
+<EssayLayout settings={settings}>
+  <Fragment slot="head">
+    <style>
+      .padding {
+        font-size: 2rem !important;
+        padding: 3em !important;
+      }
+
+      body {
+        font-family: "Karla";
+        background: #ffffff;
+        background: linear-gradient( to bottom, #ffffff 0%, #ddcba4 166%);
+        filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ddcba4', GradientType=0);
+        min-height: 100vh;
+        max-height: 100vh;
+        background-attachment: fixed;
+      }
+
+      .content {
+        font-size: 2.5rem;
+        padding: 0 2rem;
+      }
+
+      .image-header {
+        height: 400px;
+        width: 60%;
+        margin: 0 auto;
+        background-size: 100%;
+        background-position: center 50%;
+        border-radius: 8px;
+        margin-bottom: 4rem;
+        transition: background 3s;
+        border: 2px solid #fff;
+        display: flex;
+        align-items: center;
+      }
+
+      .image-header:hover {
+        background-size: 56% !important;
+      }
+
+      .image-header h1 {
+        width: 100%;
+        color: #fff;
+        font-weight: 900;
+        font-size: 6.5rem;
+        padding: 0 3rem;
+      }
+
+      .paper a {
+        display: inline !important;
+      }
+
+      .back {
+        margin-left: 40px;
+        position: absolute;
+      }
+
+      @media screen and (max-width: 992px) {
+        .back {
+          margin-left: 40px;
+          position: absolute;
+          margin: 0 auto;
+          width: 100%;
+          text-align: center;
+          font-size: 3rem;
+        }
+
+        .content {
+          font-size: 4rem;
+        }
+
+        .image-header {
+          width: 100% !important;
+        }
+      }
+    </style>
+  </Fragment>
+
+  <a slot="nav" href={page.backLinkPath} class="back">{page.backLinkLabel}</a>
+
+  <div class="content container">
+    <div class="WordSection1">
+      <div class="image-header" style={`background: url(${heroSrc}); background-size: 100%; background-position: center 50%;`}>
+        <h1>{page.title}</h1>
+      </div>
+      <Fragment set:html={renderPortableText(page.body, { paragraphClass: "MsoNormal" })} />
+    </div>
+  </div>
+</EssayLayout>

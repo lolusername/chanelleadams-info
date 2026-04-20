@@ -1,0 +1,33 @@
+{
+  "name": "chanelleadams-info",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "node scripts/prepare-studio-env.mjs && rm -rf public/studio && npx sanity build public/studio --yes && astro build && node scripts/flatten-routes.mjs",
+    "preview": "astro preview",
+    "check": "astro check",
+    "sanity": "node scripts/prepare-studio-env.mjs && sanity",
+    "migrate:content": "node scripts/migrate-content.mjs",
+    "check:routes": "node scripts/check-routes.mjs"
+  },
+  "dependencies": {
+    "@astrojs/react": "^5.0.3",
+    "@sanity/astro": "^3.3.1",
+    "@sanity/client": "^7.21.0",
+    "@sanity/image-url": "^2.1.1",
+    "astro": "^6.1.8",
+    "dotenv": "^17.4.2",
+    "groq": "^5.21.0",
+    "jsdom": "^29.0.2",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "react-is": "^19.2.5",
+    "sanity": "^5.21.0"
+    ,
+    "styled-components": "^6.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  }
+}

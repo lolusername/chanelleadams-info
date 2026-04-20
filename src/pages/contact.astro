@@ -1,0 +1,28 @@
+---
+import LegacyLayout from "../layouts/LegacyLayout.astro";
+import { CONTACT_PAGE_QUERY, SITE_SETTINGS_QUERY } from "../lib/queries";
+import { renderPortableText } from "../lib/richText";
+import { client } from "../lib/sanity";
+
+const [settings, page] = await Promise.all([
+  client.fetch(SITE_SETTINGS_QUERY),
+  client.fetch(CONTACT_PAGE_QUERY)
+]);
+---
+
+<LegacyLayout settings={settings} navItems={settings.contactNavItems}>
+  <section id="writing" class="">
+    <div>
+      <div class="col-md-12">
+        <h2 class="text-center hidden-sm">{page.title}</h2>
+      </div>
+
+      <div class="close-up-copy ">
+        <Fragment set:html={renderPortableText(page.body, { paragraphClass: "" })} />
+        <hr />
+      </div>
+    </div>
+
+    <p class="pnum hidden">vi.</p>
+  </section>
+</LegacyLayout>

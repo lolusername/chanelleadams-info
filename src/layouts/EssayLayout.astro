@@ -1,0 +1,35 @@
+---
+import LegacyHead from "../components/LegacyHead.astro";
+
+const { settings } = Astro.props;
+const siteTitleUppercase = settings.siteTitle.toUpperCase();
+---
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <LegacyHead title={settings.siteTitle} analyticsId={settings.analyticsId} />
+    <slot name="head" />
+  </head>
+  <body>
+    <main class="container-fluid ">
+      <section class="nav">
+        <a href="/">
+          <h1 class="main-name" data-period="100" data-type={JSON.stringify([siteTitleUppercase])}>
+            <span class="wrap">{siteTitleUppercase}</span>
+          </h1>
+        </a>
+
+        <slot name="nav" />
+
+        <a href={settings.twitterUrl}>
+          <i class="fa fa-twitter fa-3x"></i>
+        </a>
+      </section>
+
+      <hr class="main-hr" />
+
+      <slot />
+    </main>
+  </body>
+</html>

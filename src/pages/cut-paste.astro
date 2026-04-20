@@ -1,0 +1,34 @@
+---
+import LegacyLayout from "../layouts/LegacyLayout.astro";
+import { PUBLISHING_PAGE_QUERY, SITE_SETTINGS_QUERY } from "../lib/queries";
+import { client, urlFor } from "../lib/sanity";
+
+const [settings, page] = await Promise.all([
+  client.fetch(SITE_SETTINGS_QUERY),
+  client.fetch(PUBLISHING_PAGE_QUERY)
+]);
+---
+
+<LegacyLayout settings={settings} navItems={settings.publishingNavItems}>
+  <section id="writing" class="">
+    <div>
+      <div class="col-md-12">
+        <h2 class="text-center hidden-sm">{page.title}</h2>
+      </div>
+
+      <div class="close-up-copy  flex">
+        {page.items.map((item: any) => (
+          <div class={item.layoutClass}>
+            <img class="img-responsive" src={urlFor(item.image).url()} alt={item.image?.alt ?? ""} />
+            <h3 class="text-center">
+              <a href={item.externalUrl}>{item.title}</a>
+            </h3>
+            {item.subtitle && <h3 class="text-center text-info"> {item.subtitle}</h3>}
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <p class="pnum hidden">iii.</p>
+  </section>
+</LegacyLayout>

@@ -1,0 +1,30 @@
+---
+import LegacyLayout from "../layouts/LegacyLayout.astro";
+import { BIO_PAGE_QUERY, SITE_SETTINGS_QUERY } from "../lib/queries";
+import { renderPortableText } from "../lib/richText";
+import { client, urlFor } from "../lib/sanity";
+
+const [settings, page] = await Promise.all([
+  client.fetch(SITE_SETTINGS_QUERY),
+  client.fetch(BIO_PAGE_QUERY)
+]);
+
+const profileSrc = page?.profileImage?.asset ? urlFor(page.profileImage).url() : "/img/chanelle.jpg";
+---
+
+<LegacyLayout settings={settings} navItems={settings.homeNavItems}>
+  <section id="writing">
+    <div id="bio">
+      <div class="col-md-12">
+        <h2 class="text-center hidden-sm"><a href="/">{page.title}</a></h2>
+      </div>
+      <div class="col-md-12 align-center">
+        <Fragment set:html={renderPortableText(page.body, { paragraphClass: "close-up-copy" })} />
+      </div>
+      <div class=" hidden col-md-4 col-xs-8 col-xs-push-2 col-md-push-0 align-center close-up-img overflow-hidden">
+        <img class="img-responsive" src={profileSrc} alt="" />
+      </div>
+      <p class="pnum hidden">i.</p>
+    </div>
+  </section>
+</LegacyLayout>
