@@ -6,6 +6,9 @@ const {
   navItems = []
 } = Astro.props;
 const siteTitleUppercase = settings.siteTitle.toUpperCase();
+const visibleNavItems = navItems.filter(
+  (item) => item.path !== "/cut-paste.html" && item.path !== "cut-paste.html"
+);
 ---
 
 <!DOCTYPE html>
@@ -22,16 +25,12 @@ const siteTitleUppercase = settings.siteTitle.toUpperCase();
         </h1>
       </a>
 
-      <a href={settings.twitterUrl}>
-        <i class="fa fa-twitter fa-3x"></i>
-      </a>
-
       <hr class="main-hr" />
 
       <div class="content">
         <nav class="col-md-2 ">
           <ul>
-            {navItems.map((item) => (
+            {visibleNavItems.map((item) => (
               <li class:list={[item.hidden && "hidden", item.current && "current"]}>
                 <a href={item.path}>{item.label}</a>
               </li>

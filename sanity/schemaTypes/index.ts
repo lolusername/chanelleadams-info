@@ -10,11 +10,19 @@ import {
   researchPage,
   siteSettings
 } from "./documents";
-import { figure, navItem, portableText, researchEntry, researchSection } from "./objects";
+import {
+  figure,
+  navItem,
+  portableText,
+  researchEntry,
+  researchSection,
+  topicDivider
+} from "./objects";
 
 export const schemaTypes = [
   navItem,
   figure,
+  topicDivider,
   portableText,
   researchEntry,
   researchSection,

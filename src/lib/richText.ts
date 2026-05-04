@@ -59,6 +59,9 @@ const renderFigure = (block: any) => {
   return `<img src="${escapeAttribute(src)}"${title}${alt} style="${style}">`;
 };
 
+const renderTopicDivider = () =>
+  '<div class="topic-divider" aria-hidden="true"></div>';
+
 export const renderPortableText = (
   blocks: any[] = [],
   options: { paragraphClass?: string } = {}
@@ -83,6 +86,10 @@ export const renderPortableText = (
 
       if (block?._type === "figure") {
         return renderFigure(block);
+      }
+
+      if (block?._type === "topicDivider") {
+        return renderTopicDivider();
       }
 
       return "";

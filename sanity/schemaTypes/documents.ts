@@ -78,6 +78,8 @@ export const homePage = defineType({
     defineField({
       name: "content",
       type: "portableText",
+      description:
+        "Insert a Topic Divider block between news topics wherever the diamond should appear.",
       validation: (rule) => rule.required()
     })
   ]

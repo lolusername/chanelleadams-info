@@ -96,9 +96,24 @@ export const portableText = defineType({
       }
     }),
     defineArrayMember({
+      type: "topicDivider"
+    }),
+    defineArrayMember({
       type: "figure"
     })
   ]
+});
+
+export const topicDivider = defineType({
+  name: "topicDivider",
+  title: "Topic Divider",
+  type: "object",
+  fields: [],
+  preview: {
+    prepare: () => ({
+      title: "Topic Divider"
+    })
+  }
 });
 
 export const researchEntry = defineType({

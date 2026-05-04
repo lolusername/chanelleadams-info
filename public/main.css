@@ -368,9 +368,7 @@ nav ul>li a {
     }
 }
 
-#news>*>.close-up-copy::after {
-    content: " ";
-    display: block;
+.topic-divider {
     background: url(img/dot.png);
     background-size: contain;
     background-position: center;
