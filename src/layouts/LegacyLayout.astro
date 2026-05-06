@@ -5,9 +5,58 @@ const {
   settings,
   navItems = []
 } = Astro.props;
+
+type NavItem = {
+  label: string;
+  path: string;
+  hidden?: boolean;
+};
+
 const siteTitleUppercase = settings.siteTitle.toUpperCase();
+
+const normalizePath = (path = "/") => {
+  const pathOnly = path.split("?")[0].split("#")[0];
+  const trimmed = pathOnly.replace(/^\/+|\/+$/g, "");
+
+  if (!trimmed || trimmed === "index.html") {
+    return "/";
+  }
+
+  return `/${trimmed}`;
+};
+
+const equivalentPaths = (path = "/") => {
+  const normalized = normalizePath(path);
+
+  if (normalized === "/") {
+    return ["/"];
+  }
+
+  const withoutHtml = normalized.endsWith(".html")
+    ? normalized.slice(0, -".html".length)
+    : normalized;
+
+  return [normalized, withoutHtml, `${withoutHtml}.html`];
+};
+
+const currentPath = normalizePath(Astro.url.pathname);
+const currentPathWithoutHtml =
+  currentPath === "/" ? currentPath : currentPath.replace(/\.html$/, "");
+const currentLabelByPath: Record<string, string> = {
+  "/": "NEWS",
+  "/bio": "BIO",
+  "/contact": "CONTACT",
+  "/cut-paste": "PUBLISHING PROJECTS",
+  "/pharmacy": "RESEARCH PRACTICE"
+};
+const currentLabel = currentLabelByPath[currentPathWithoutHtml];
+const normalizeLabel = (label = "") => label.replace(/\s+/g, " ").trim().toUpperCase();
+const isCurrentNavItem = (item: NavItem) =>
+  equivalentPaths(item.path).includes(currentPath) ||
+  (!!currentLabel && normalizeLabel(item.label) === currentLabel);
+
 const visibleNavItems = navItems.filter(
-  (item) => item.path !== "/cut-paste.html" && item.path !== "cut-paste.html"
+  (item: NavItem) => item.path !== "/cut-paste.html" && item.path !== "cut-paste.html"
 );
 ---
 
@@ -31,7 +80,7 @@ const visibleNavItems = navItems.filter(
         <nav class="col-md-2 ">
           <ul>
             {visibleNavItems.map((item) => (
-              <li class:list={[item.hidden && "hidden", item.current && "current"]}>
+              <li class:list={[item.hidden && "hidden", isCurrentNavItem(item) && "current"]}>
                 <a href={item.path}>{item.label}</a>
               </li>
             ))}

@@ -9,6 +9,7 @@
     "check": "astro check",
     "sanity": "node scripts/prepare-studio-env.mjs && sanity",
     "migrate:content": "node scripts/migrate-content.mjs",
+    "restore:news-dividers": "node scripts/prepare-studio-env.mjs && sanity exec scripts/restore-news-dividers.mjs --with-user-token",
     "check:routes": "node scripts/check-routes.mjs"
   },
   "dependencies": {

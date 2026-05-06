@@ -18,12 +18,16 @@ export const navItem = defineType({
     defineField({
       name: "hidden",
       type: "boolean",
-      initialValue: false
+      initialValue: false,
+      description: "Hide this nav item while keeping the route available."
     }),
     defineField({
       name: "current",
       type: "boolean",
-      initialValue: false
+      initialValue: false,
+      readOnly: true,
+      hidden: true,
+      description: "Legacy import flag. The site now underlines the current page automatically from the URL."
     })
   ]
 });
@@ -96,7 +100,8 @@ export const portableText = defineType({
       }
     }),
     defineArrayMember({
-      type: "topicDivider"
+      type: "topicDivider",
+      title: "Little Decal / Topic Divider"
     }),
     defineArrayMember({
       type: "figure"
@@ -106,12 +111,20 @@ export const portableText = defineType({
 
 export const topicDivider = defineType({
   name: "topicDivider",
-  title: "Topic Divider",
+  title: "Little Decal / Topic Divider",
+  description: "Insert this between news topics/posts to show the small diamond decal.",
   type: "object",
-  fields: [],
+  fields: [
+    defineField({
+      name: "label",
+      type: "string",
+      initialValue: "decal",
+      hidden: true
+    })
+  ],
   preview: {
     prepare: () => ({
-      title: "Topic Divider"
+      title: "Little Decal / Topic Divider"
     })
   }
 });
