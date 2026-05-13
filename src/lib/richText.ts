@@ -62,6 +62,32 @@ const renderFigure = (block: any) => {
 const renderTopicDivider = () =>
   '<div class="topic-divider" aria-hidden="true"></div>';
 
+const renderPortableTextBlock = (block: any, paragraphClass: string) => {
+  if (block?._type === "block") {
+    const html = renderChildren(block.children, block.markDefs);
+    const normalized = html.replaceAll("&nbsp;", "").replaceAll(/\s+/g, "");
+    if (!normalized) {
+      return "";
+    }
+
+    const classAttribute = paragraphClass
+      ? ` class="${escapeAttribute(paragraphClass)}"`
+      : "";
+
+    return `<p${classAttribute}>${html}</p>`;
+  }
+
+  if (block?._type === "figure") {
+    return renderFigure(block);
+  }
+
+  if (block?._type === "topicDivider") {
+    return renderTopicDivider();
+  }
+
+  return "";
+};
+
 export const renderPortableText = (
   blocks: any[] = [],
   options: { paragraphClass?: string } = {}
@@ -69,31 +95,58 @@ export const renderPortableText = (
   const paragraphClass = options.paragraphClass ?? "close-up-copy";
 
   return blocks
-    .map((block) => {
-      if (block?._type === "block") {
-        const html = renderChildren(block.children, block.markDefs);
-        const normalized = html.replaceAll("&nbsp;", "").replaceAll(/\s+/g, "");
-        if (!normalized) {
-          return "";
-        }
-
-        const classAttribute = paragraphClass
-          ? ` class="${escapeAttribute(paragraphClass)}"`
-          : "";
-
-        return `<p${classAttribute}>${html}</p>`;
-      }
-
-      if (block?._type === "figure") {
-        return renderFigure(block);
-      }
-
-      if (block?._type === "topicDivider") {
-        return renderTopicDivider();
-      }
-
-      return "";
-    })
+    .map((block) => renderPortableTextBlock(block, paragraphClass))
     .filter(Boolean)
+    .join("\n");
+};
+
+export const renderNewsFeed = (
+  blocks: any[] = [],
+  options: { paragraphClass?: string } = {}
+) => {
+  const paragraphClass = options.paragraphClass ?? "close-up-copy";
+  const posts: string[][] = [];
+  let currentPost: string[] = [];
+  let currentPostHasText = false;
+
+  const pushPost = () => {
+    if (currentPost.length) {
+      posts.push(currentPost);
+    }
+
+    currentPost = [];
+    currentPostHasText = false;
+  };
+
+  for (const block of blocks) {
+    if (block?._type === "topicDivider") {
+      continue;
+    }
+
+    const rendered = renderPortableTextBlock(block, paragraphClass);
+    if (!rendered) {
+      continue;
+    }
+
+    if (block?._type === "block") {
+      if (currentPostHasText) {
+        pushPost();
+      }
+
+      currentPost.push(rendered);
+      currentPostHasText = true;
+      continue;
+    }
+
+    currentPost.push(rendered);
+  }
+
+  pushPost();
+
+  return posts
+    .map((post, index) => {
+      const divider = index < posts.length - 1 ? `\n${renderTopicDivider()}` : "";
+      return `${post.join("\n")}${divider}`;
+    })
     .join("\n");
 };

@@ -1,7 +1,7 @@
 ---
 import LegacyLayout from "../layouts/LegacyLayout.astro";
 import { HOME_PAGE_QUERY, SITE_SETTINGS_QUERY } from "../lib/queries";
-import { renderPortableText } from "../lib/richText";
+import { renderNewsFeed } from "../lib/richText";
 import { client } from "../lib/sanity";
 
 const [settings, page] = await Promise.all([
@@ -18,7 +18,7 @@ const [settings, page] = await Promise.all([
       </div>
       <div class="col-md-12 align-center">
         <p class="text-center updated-tag">{page.updatedLabel}</p>
-        <Fragment set:html={renderPortableText(page.content, { paragraphClass: "close-up-copy" })} />
+        <Fragment set:html={renderNewsFeed(page.content, { paragraphClass: "close-up-copy" })} />
       </div>
       <div class=" hidden col-md-4 col-xs-8 col-xs-push-2 col-md-push-0 align-center close-up-img overflow-hidden">
         <img class="img-responsive" src="/img/chanelle.jpg" alt="" />
