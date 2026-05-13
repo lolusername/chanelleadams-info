@@ -1,6 +1,7 @@
 ---
 import LegacyLayout from "../layouts/LegacyLayout.astro";
 import { CV_PAGE_QUERY, SITE_SETTINGS_QUERY } from "../lib/queries";
+import { excerpt, pageTitle } from "../lib/seo";
 import { client } from "../lib/sanity";
 
 const [settings, data] = await Promise.all([
@@ -14,9 +15,23 @@ const entriesByCategory = Object.fromEntries(
     data.entries.filter((entry: any) => entry.category === category)
   ])
 );
+const meta = {
+  title: pageTitle(settings.siteTitle, "Curriculum Vitae"),
+  description: excerpt(
+    [
+      data.page.heading,
+      data.page.contactEmail,
+      ...categories,
+      ...data.entries.slice(0, 6).map((entry: any) =>
+        [entry.title, entry.organization, entry.date].filter(Boolean).join(" ")
+      )
+    ].join(" ")
+  ),
+  canonicalPath: "/cv.html"
+};
 ---
 
-<LegacyLayout settings={settings} navItems={settings.homeNavItems}>
+<LegacyLayout settings={settings} navItems={settings.homeNavItems} meta={meta}>
   <section id="writing" class="cv-page">
     <div id="cv">
       <div class="col-md-12">

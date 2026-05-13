@@ -2,15 +2,23 @@
 import LegacyLayout from "../layouts/LegacyLayout.astro";
 import { RESEARCH_PAGE_QUERY, SITE_SETTINGS_QUERY } from "../lib/queries";
 import { renderPortableText } from "../lib/richText";
+import { excerptFromPortableText, imageUrlFromFigure, pageTitle } from "../lib/seo";
 import { client, urlFor } from "../lib/sanity";
 
 const [settings, page] = await Promise.all([
   client.fetch(SITE_SETTINGS_QUERY),
   client.fetch(RESEARCH_PAGE_QUERY)
 ]);
+
+const meta = {
+  title: pageTitle(settings.siteTitle, page.title),
+  description: excerptFromPortableText(page.intro),
+  canonicalPath: "/pharmacy.html",
+  image: imageUrlFromFigure(page.posterImage)
+};
 ---
 
-<LegacyLayout settings={settings} navItems={settings.researchNavItems}>
+<LegacyLayout settings={settings} navItems={settings.researchNavItems} meta={meta}>
   <section id="writing" class="">
     <div>
       <div class="col-md-12">

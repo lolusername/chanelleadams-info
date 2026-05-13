@@ -2,6 +2,37 @@ a {
     color: #000;
 }
 
+.skip-link {
+    background: #fff;
+    border: 2px solid #333;
+    border-radius: 8px;
+    left: -999px;
+    padding: 0.75em 1em;
+    position: absolute;
+    top: 1em;
+    z-index: 10000;
+}
+
+.skip-link:focus {
+    left: 1em;
+}
+
+.sr-only {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+#main-content:focus {
+    outline: none;
+}
+
 .collage a {
     text-decoration: underline;
 }

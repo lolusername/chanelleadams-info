@@ -1,5 +1,13 @@
 ---
-const { title, analyticsId } = Astro.props;
+const {
+  title,
+  siteTitle = title,
+  analyticsId,
+  description,
+  canonicalPath,
+  image,
+  type = "website"
+} = Astro.props;
 const analyticsSrc = analyticsId
   ? `https://www.googletagmanager.com/gtag/js?id=${analyticsId}`
   : null;
@@ -13,12 +21,44 @@ gtag("js", new Date());
 gtag("config", ${JSON.stringify(analyticsId)});
 `
   : "";
+const siteBase = Astro.site ?? new URL("https://chanelleadams.info");
+const canonicalUrl = new URL(canonicalPath ?? Astro.url.pathname, siteBase).toString();
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": type === "article" ? "Article" : "WebPage",
+  name: title,
+  url: canonicalUrl,
+  isPartOf: {
+    "@type": "WebSite",
+    name: siteTitle,
+    url: new URL("/", siteBase).toString()
+  },
+  ...(description ? { description } : {}),
+  ...(image ? { image } : {})
+};
 ---
 
 <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="index, follow" />
+{description && <meta name="description" content={description} />}
+<link rel="canonical" href={canonicalUrl} />
+
+<meta property="og:site_name" content={siteTitle} />
+<meta property="og:title" content={title} />
+{description && <meta property="og:description" content={description} />}
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonicalUrl} />
+{image && <meta property="og:image" content={image} />}
+
+<meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
+<meta name="twitter:title" content={title} />
+{description && <meta name="twitter:description" content={description} />}
+{image && <meta name="twitter:image" content={image} />}
 
 {analyticsSrc && <script async src={analyticsSrc}></script>}
 {analyticsScript && <script is:inline set:html={analyticsScript}></script>}
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 
 <title>{title}</title>
 

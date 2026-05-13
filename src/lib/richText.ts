@@ -53,10 +53,11 @@ const renderFigure = (block: any) => {
 
   const src = urlFor(block).url();
   const style = FIGURE_STYLE_BY_VARIANT[block.variant] ?? FIGURE_STYLE_BY_VARIANT.newsSmall;
-  const alt = block.alt ? ` alt="${escapeAttribute(block.alt)}"` : ' alt=""';
+  const altText = block.alt || block.titleText || "";
+  const alt = altText ? ` alt="${escapeAttribute(altText)}"` : ' alt=""';
   const title = block.titleText ? ` title="${escapeAttribute(block.titleText)}"` : "";
 
-  return `<img src="${escapeAttribute(src)}"${title}${alt} style="${style}">`;
+  return `<img src="${escapeAttribute(src)}"${title}${alt} loading="lazy" decoding="async" style="${style}">`;
 };
 
 const renderTopicDivider = () =>

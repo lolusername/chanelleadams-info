@@ -1,15 +1,27 @@
 ---
 import LegacyLayout from "../layouts/LegacyLayout.astro";
 import { PUBLISHING_PAGE_QUERY, SITE_SETTINGS_QUERY } from "../lib/queries";
+import { excerpt, imageUrlFromFigure, pageTitle } from "../lib/seo";
 import { client, urlFor } from "../lib/sanity";
 
 const [settings, page] = await Promise.all([
   client.fetch(SITE_SETTINGS_QUERY),
   client.fetch(PUBLISHING_PAGE_QUERY)
 ]);
+
+const meta = {
+  title: pageTitle(settings.siteTitle, page.title),
+  description: excerpt(
+    page.items
+      .map((item: any) => [item.title, item.subtitle].filter(Boolean).join(". "))
+      .join(" ")
+  ),
+  canonicalPath: "/cut-paste.html",
+  image: imageUrlFromFigure(page.items.find((item: any) => item.image)?.image)
+};
 ---
 
-<LegacyLayout settings={settings} navItems={settings.publishingNavItems}>
+<LegacyLayout settings={settings} navItems={settings.publishingNavItems} meta={meta}>
   <section id="writing" class="">
     <div>
       <div class="col-md-12">

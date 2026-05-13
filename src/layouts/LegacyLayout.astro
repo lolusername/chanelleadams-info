@@ -3,7 +3,8 @@ import LegacyHead from "../components/LegacyHead.astro";
 
 const {
   settings,
-  navItems = []
+  navItems = [],
+  meta = {}
 } = Astro.props;
 
 type NavItem = {
@@ -62,14 +63,23 @@ const visibleNavItems = navItems.filter(
 ---
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <LegacyHead title={settings.siteTitle} analyticsId={settings.analyticsId} />
+    <LegacyHead
+      title={meta.title ?? settings.siteTitle}
+      siteTitle={settings.siteTitle}
+      analyticsId={settings.analyticsId}
+      description={meta.description}
+      canonicalPath={meta.canonicalPath}
+      image={meta.image}
+      type={meta.type}
+    />
     <slot name="head" />
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <main class="container-fluid">
-      <a href="/">
+      <a href="/" aria-label={`${settings.siteTitle} home`}>
         <h1 class="main-name" data-period="100" data-type={JSON.stringify([siteTitleUppercase])}>
           <span class="wrap">{siteTitleUppercase}</span>
         </h1>
@@ -78,16 +88,20 @@ const visibleNavItems = navItems.filter(
       <hr class="main-hr" />
 
       <div class="content">
-        <nav class="col-md-2 ">
+        <nav class="col-md-2 " aria-label="Primary navigation">
           <ul>
-            {visibleNavItems.map((item) => (
-              <li class:list={[item.hidden && "hidden", isCurrentNavItem(item) && "current"]}>
-                <a href={item.path}>{item.label}</a>
-              </li>
-            ))}
+            {visibleNavItems.map((item) => {
+              const isCurrent = isCurrentNavItem(item);
+
+              return (
+                <li class:list={[item.hidden && "hidden", isCurrent && "current"]}>
+                  <a href={item.path} aria-current={isCurrent ? "page" : undefined}>{item.label}</a>
+                </li>
+              );
+            })}
           </ul>
         </nav>
-        <div class=" col-md-8 col-md-push-2  ">
+        <div id="main-content" class=" col-md-8 col-md-push-2  " tabindex="-1">
           <slot />
         </div>
         <div class="clearfix"></div>

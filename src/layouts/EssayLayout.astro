@@ -1,20 +1,29 @@
 ---
 import LegacyHead from "../components/LegacyHead.astro";
 
-const { settings } = Astro.props;
+const { settings, meta = {} } = Astro.props;
 const siteTitleUppercase = settings.siteTitle.toUpperCase();
 ---
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <LegacyHead title={settings.siteTitle} analyticsId={settings.analyticsId} />
+    <LegacyHead
+      title={meta.title ?? settings.siteTitle}
+      siteTitle={settings.siteTitle}
+      analyticsId={settings.analyticsId}
+      description={meta.description}
+      canonicalPath={meta.canonicalPath}
+      image={meta.image}
+      type={meta.type}
+    />
     <slot name="head" />
   </head>
   <body>
-    <main class="container-fluid ">
-      <section class="nav">
-        <a href="/">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <main id="main-content" class="container-fluid " tabindex="-1">
+      <section class="nav" aria-label="Essay navigation">
+        <a href="/" aria-label={`${settings.siteTitle} home`}>
           <h1 class="main-name" data-period="100" data-type={JSON.stringify([siteTitleUppercase])}>
             <span class="wrap">{siteTitleUppercase}</span>
           </h1>
@@ -23,7 +32,8 @@ const siteTitleUppercase = settings.siteTitle.toUpperCase();
         <slot name="nav" />
 
         <a href={settings.twitterUrl}>
-          <i class="fa fa-twitter fa-3x"></i>
+          <i class="fa fa-twitter fa-3x" aria-hidden="true"></i>
+          <span class="sr-only">Twitter</span>
         </a>
       </section>
 

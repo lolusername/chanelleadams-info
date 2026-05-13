@@ -2,15 +2,22 @@
 import LegacyLayout from "../layouts/LegacyLayout.astro";
 import { CONTACT_PAGE_QUERY, SITE_SETTINGS_QUERY } from "../lib/queries";
 import { renderPortableText } from "../lib/richText";
+import { excerptFromPortableText, pageTitle } from "../lib/seo";
 import { client } from "../lib/sanity";
 
 const [settings, page] = await Promise.all([
   client.fetch(SITE_SETTINGS_QUERY),
   client.fetch(CONTACT_PAGE_QUERY)
 ]);
+
+const meta = {
+  title: pageTitle(settings.siteTitle, page.title),
+  description: excerptFromPortableText(page.body),
+  canonicalPath: "/contact.html"
+};
 ---
 
-<LegacyLayout settings={settings} navItems={settings.contactNavItems}>
+<LegacyLayout settings={settings} navItems={settings.contactNavItems} meta={meta}>
   <section id="writing" class="">
     <div>
       <div class="col-md-12">

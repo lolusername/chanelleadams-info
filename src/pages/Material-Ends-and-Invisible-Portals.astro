@@ -2,6 +2,7 @@
 import EssayLayout from "../layouts/EssayLayout.astro";
 import { ESSAY_PAGE_QUERY, SITE_SETTINGS_QUERY } from "../lib/queries";
 import { renderPortableText } from "../lib/richText";
+import { excerptFromPortableText, imageUrlFromFigure, pageTitle } from "../lib/seo";
 import { client, urlFor } from "../lib/sanity";
 
 const [settings, page] = await Promise.all([
@@ -10,9 +11,16 @@ const [settings, page] = await Promise.all([
 ]);
 
 const heroSrc = urlFor(page.heroImage).url();
+const meta = {
+  title: pageTitle(settings.siteTitle, page.title),
+  description: excerptFromPortableText(page.body),
+  canonicalPath: `/${page.routeSlug}`,
+  image: imageUrlFromFigure(page.heroImage),
+  type: "article"
+};
 ---
 
-<EssayLayout settings={settings}>
+<EssayLayout settings={settings} meta={meta}>
   <Fragment slot="head">
     <style>
       .padding {

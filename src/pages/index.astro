@@ -2,15 +2,23 @@
 import LegacyLayout from "../layouts/LegacyLayout.astro";
 import { HOME_PAGE_QUERY, SITE_SETTINGS_QUERY } from "../lib/queries";
 import { renderNewsFeed } from "../lib/richText";
+import { excerptFromPortableText, firstImageUrlFromPortableText, pageTitle } from "../lib/seo";
 import { client } from "../lib/sanity";
 
 const [settings, page] = await Promise.all([
   client.fetch(SITE_SETTINGS_QUERY),
   client.fetch(HOME_PAGE_QUERY)
 ]);
+
+const meta = {
+  title: pageTitle(settings.siteTitle, page.title),
+  description: excerptFromPortableText(page.content),
+  canonicalPath: "/",
+  image: firstImageUrlFromPortableText(page.content)
+};
 ---
 
-<LegacyLayout settings={settings} navItems={settings.homeNavItems}>
+<LegacyLayout settings={settings} navItems={settings.homeNavItems} meta={meta}>
   <section id="writing">
     <div id="news">
       <div class="col-md-12">
