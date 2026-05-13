@@ -1,9 +1,12 @@
 ---
-import CvLayout from "../layouts/CvLayout.astro";
-import { CV_PAGE_QUERY } from "../lib/queries";
+import LegacyLayout from "../layouts/LegacyLayout.astro";
+import { CV_PAGE_QUERY, SITE_SETTINGS_QUERY } from "../lib/queries";
 import { client } from "../lib/sanity";
 
-const data = await client.fetch(CV_PAGE_QUERY);
+const [settings, data] = await Promise.all([
+  client.fetch(SITE_SETTINGS_QUERY),
+  client.fetch(CV_PAGE_QUERY)
+]);
 const categories = data.page?.categoryOrder ?? [];
 const entriesByCategory = Object.fromEntries(
   categories.map((category: string) => [
@@ -13,42 +16,41 @@ const entriesByCategory = Object.fromEntries(
 );
 ---
 
-<CvLayout title={data.page.title}>
-  <div id="cv" class="container">
-    <div class="row">
-      <div class="col-12 card w-100 mt-md-5 mb-0 mb-md-5">
-        <section id="cv-header" class="card-header px-3 pt-3">
-          <h5 class="">{data.page.heading}</h5>
-
-          <a class="text-pink-800" href={`mailto:${data.page.contactEmail}`}>{data.page.contactEmail}</a>
-        </section>
-
-        <div class="card-body d-flex flex-column px-3 mt-5 mt-md-0 pt-5 pt-md-0 space-y-12">
-          <div class="space-y-6 pt-6">
-            <section class="space-y-12">
-              <div class="space-y-6" >
-                {categories.map((category: string) => (
-                  <div class="space-y-6">
-                    <h2 class="text-2xl uppercase">{category}</h2>
-
-                    {entriesByCategory[category].map((row: any) => (
-                      <div class="space-y-2">
-                        {row.url ? (
-                          <a href={row.url} class="text-pink-900 font-bold">{row.title} {row.organization}</a>
-                        ) : (
-                          <span class="font-bold">{row.title} | {row.organization}</span>
-                        )}
-                        {row.description && <p>{row.description}</p>}
-                        {row.date && <p class="italic">{row.date}</p>}
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </section>
-          </div>
-        </div>
+<LegacyLayout settings={settings} navItems={settings.homeNavItems}>
+  <section id="writing" class="cv-page">
+    <div id="cv">
+      <div class="col-md-12">
+        <h2 class="text-center hidden-sm">{data.page.heading}</h2>
       </div>
+
+      <div class="col-md-12 align-center cv-content">
+        <p class="close-up-copy cv-contact">
+          <a href={`mailto:${data.page.contactEmail}`}>{data.page.contactEmail}</a>
+        </p>
+
+        {categories.map((category: string) => (
+          <section class="cv-category">
+            <h3>{category}</h3>
+
+            {entriesByCategory[category].map((row: any) => (
+              <article class="cv-entry">
+                <p class="cv-entry-title">
+                  {row.url ? (
+                    <a href={row.url}>{row.title}</a>
+                  ) : (
+                    <span>{row.title}</span>
+                  )}
+                  {row.organization && <span> | {row.organization}</span>}
+                </p>
+                {row.description && <p class="cv-entry-description">{row.description}</p>}
+                {row.date && <p class="cv-entry-date">{row.date}</p>}
+              </article>
+            ))}
+          </section>
+        ))}
+      </div>
+
+      <p class="pnum hidden">v.</p>
     </div>
-  </div>
-</CvLayout>
+  </section>
+</LegacyLayout>
