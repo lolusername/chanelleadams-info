@@ -375,10 +375,10 @@ nav ul>li a {
 
 @media screen and (max-width: 992px) {
     .typewrite {
-        padding-top: 0;
+        padding-top: 120px;
     }
     .close-up-copy {
-        font-size: 1.15em;
+        font-size: 1.5em;
         margin-top: 0.5em;
     }
     .collage h3 {
@@ -422,8 +422,8 @@ nav ul>li a {
         text-decoration: underline;
     }
     #writing {
-        font-size: 1.15em;
-        max-height: none;
+        font-size: 2.33em;
+        max-height: Calc(100vh - 512px);
         box-shadow: none;
         padding: 0;
         background: transparent;
@@ -433,20 +433,20 @@ nav ul>li a {
         margin-right: 0;
     }
     .typewrite {
-        font-size: 1.5em;
+        font-size: 2em;
         margin-left: 0;
     }
     .main-name {
         text-align: center;
-        font-size: 2.6em;
+        font-size: 4em;
         margin-left: 0;
     }
     #writing h2 {
         display: hidden;
-        font-size: 1.55em;
+        font-size: 1.8em;
     }
     .content nav {
-        font-size: 1.45em;
+        font-size: 2.5em;
         justify-content: center;
         text-align: center;
         margin-bottom: 1em;
