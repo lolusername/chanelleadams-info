@@ -10,6 +10,7 @@
     "sanity": "node scripts/prepare-studio-env.mjs && sanity",
     "migrate:content": "node scripts/migrate-content.mjs",
     "restore:news-dividers": "node scripts/prepare-studio-env.mjs && sanity exec scripts/restore-news-dividers.mjs --with-user-token",
+    "sync:editor-fields": "node scripts/prepare-studio-env.mjs && sanity exec scripts/sync-editor-friendly-fields.mjs --with-user-token",
     "check:routes": "node scripts/check-routes.mjs"
   },
   "dependencies": {

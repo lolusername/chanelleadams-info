@@ -9,10 +9,14 @@ const [settings, data] = await Promise.all([
   client.fetch(CV_PAGE_QUERY)
 ]);
 const categories = data.page?.categoryOrder ?? [];
+const cvEntries =
+  Array.isArray(data.page?.entries) && data.page.entries.length > 0
+    ? data.page.entries
+    : data.entries;
 const entriesByCategory = Object.fromEntries(
   categories.map((category: string) => [
     category,
-    data.entries.filter((entry: any) => entry.category === category)
+    cvEntries.filter((entry: any) => entry.category === category)
   ])
 );
 const meta = {
@@ -22,7 +26,7 @@ const meta = {
       data.page.heading,
       data.page.contactEmail,
       ...categories,
-      ...data.entries.slice(0, 6).map((entry: any) =>
+      ...cvEntries.slice(0, 6).map((entry: any) =>
         [entry.title, entry.organization, entry.date].filter(Boolean).join(" ")
       )
     ].join(" ")

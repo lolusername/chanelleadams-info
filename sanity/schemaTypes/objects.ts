@@ -109,10 +109,46 @@ export const portableText = defineType({
   ]
 });
 
+export const newsPost = defineType({
+  name: "newsPost",
+  title: "News Post",
+  type: "object",
+  fields: [
+    defineField({
+      name: "body",
+      title: "Post content",
+      type: "portableText",
+      description:
+        "Write one full news post here. The diamond decal appears automatically between posts on the website.",
+      validation: (rule) => rule.required()
+    })
+  ],
+  preview: {
+    select: {
+      body: "body"
+    },
+    prepare: ({ body }) => {
+      const text =
+        body
+          ?.filter((block: any) => block?._type === "block")
+          ?.flatMap((block: any) => block.children ?? [])
+          ?.map((child: any) => child.text ?? "")
+          ?.join(" ")
+          ?.replace(/\s+/g, " ")
+          ?.trim() || "Untitled news post";
+
+      return {
+        title: text.length > 80 ? `${text.slice(0, 77)}...` : text
+      };
+    }
+  }
+});
+
 export const topicDivider = defineType({
   name: "topicDivider",
   title: "Little Decal / Topic Divider",
-  description: "Insert this between news topics/posts to show the small diamond decal.",
+  description:
+    "Legacy divider block. Prefer adding separate News Posts on the Home Page; the website now adds the decal between posts automatically.",
   type: "object",
   fields: [
     defineField({

@@ -54,7 +54,7 @@ h5.card-title:first-of-type {
 
 .description {
   font-weight: 100;
-  font-style: italic;
+  font-style: normal;
 }
 @media (max-width: 768px) {
   .card {

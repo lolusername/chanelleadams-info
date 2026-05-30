@@ -13,6 +13,7 @@ import {
 import {
   figure,
   navItem,
+  newsPost,
   portableText,
   researchEntry,
   researchSection,
@@ -23,6 +24,7 @@ export const schemaTypes = [
   navItem,
   figure,
   topicDivider,
+  newsPost,
   portableText,
   researchEntry,
   researchSection,

@@ -101,26 +101,53 @@ export const renderPortableText = (
     .join("\n");
 };
 
+const renderNewsPostBlocks = (blocks: any[] = [], paragraphClass: string) =>
+  blocks
+    .filter((block) => block?._type !== "topicDivider")
+    .map((block) => renderPortableTextBlock(block, paragraphClass))
+    .filter(Boolean)
+    .join("\n");
+
+const renderDelimitedPosts = (posts: string[]) =>
+  posts
+    .filter(Boolean)
+    .map((post, index, allPosts) => {
+      const divider = index < allPosts.length - 1 ? `\n${renderTopicDivider()}` : "";
+      return `${post}${divider}`;
+    })
+    .join("\n");
+
+export const renderNewsPosts = (
+  posts: any[] = [],
+  options: { paragraphClass?: string } = {}
+) => {
+  const paragraphClass = options.paragraphClass ?? "close-up-copy";
+
+  return renderDelimitedPosts(
+    posts.map((post) => renderNewsPostBlocks(post?.body ?? [], paragraphClass))
+  );
+};
+
 export const renderNewsFeed = (
   blocks: any[] = [],
   options: { paragraphClass?: string } = {}
 ) => {
   const paragraphClass = options.paragraphClass ?? "close-up-copy";
-  const posts: string[][] = [];
+  const posts: string[] = [];
   let currentPost: string[] = [];
-  let currentPostHasText = false;
 
   const pushPost = () => {
-    if (currentPost.length) {
-      posts.push(currentPost);
+    const renderedPost = currentPost.join("\n").trim();
+    if (renderedPost) {
+      posts.push(renderedPost);
     }
 
     currentPost = [];
-    currentPostHasText = false;
   };
 
   for (const block of blocks) {
     if (block?._type === "topicDivider") {
+      pushPost();
       continue;
     }
 
@@ -129,25 +156,10 @@ export const renderNewsFeed = (
       continue;
     }
 
-    if (block?._type === "block") {
-      if (currentPostHasText) {
-        pushPost();
-      }
-
-      currentPost.push(rendered);
-      currentPostHasText = true;
-      continue;
-    }
-
     currentPost.push(rendered);
   }
 
   pushPost();
 
-  return posts
-    .map((post, index) => {
-      const divider = index < posts.length - 1 ? `\n${renderTopicDivider()}` : "";
-      return `${post.join("\n")}${divider}`;
-    })
-    .join("\n");
+  return renderDelimitedPosts(posts);
 };

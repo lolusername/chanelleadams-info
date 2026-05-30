@@ -47,6 +47,11 @@ export const SITE_SETTINGS_QUERY = groq`*[_type == "siteSettings"][0]{
 export const HOME_PAGE_QUERY = groq`*[_type == "homePage"][0]{
   title,
   updatedLabel,
+  posts[]{
+    body[]{
+      ${portableTextFields}
+    }
+  },
   content[]{
     ${portableTextFields}
   }
@@ -123,9 +128,18 @@ export const CV_PAGE_QUERY = groq`{
     title,
     heading,
     contactEmail,
-    categoryOrder
+    categoryOrder,
+    entries[]->{
+      category,
+      title,
+      organization,
+      description,
+      date,
+      url,
+      sortOrder
+    }
   },
-  "entries": *[_type == "cvEntry"] | order(sortOrder asc){
+  "entries": *[_type == "cvEntry"] | order(sortOrder asc, _createdAt asc){
     category,
     title,
     organization,

@@ -76,11 +76,24 @@ export const homePage = defineType({
       validation: (rule) => rule.required()
     }),
     defineField({
+      name: "posts",
+      title: "News Posts",
+      type: "array",
+      of: [defineArrayMember({ type: "newsPost" })],
+      description:
+        "Add one item per news post. Drag posts to reorder them; the diamond decal is added automatically between posts on the website.",
+      options: {
+        sortable: true
+      }
+    }),
+    defineField({
       name: "content",
+      title: "Legacy News Content",
       type: "portableText",
       description:
-        "Insert a Topic Divider block between news topics wherever the diamond should appear.",
-      validation: (rule) => rule.required()
+        "Legacy imported content kept as a fallback. Edit News Posts above instead.",
+      hidden: ({ document }) =>
+        Array.isArray(document?.posts) && document.posts.length > 0
     })
   ]
 });
@@ -284,6 +297,17 @@ export const cvPage = defineType({
         sortable: true
       },
       validation: (rule) => rule.required().min(1)
+    }),
+    defineField({
+      name: "entries",
+      title: "CV Entries",
+      type: "array",
+      of: [defineArrayMember({ type: "reference", to: [{ type: "cvEntry" }] })],
+      description:
+        "Add CV entries here and drag them into the order they should appear. The Category field on each entry controls which section it appears under.",
+      options: {
+        sortable: true
+      }
     })
   ]
 });
@@ -326,9 +350,23 @@ export const cvEntry = defineType({
     defineField({
       name: "sortOrder",
       type: "number",
-      validation: (rule) => rule.required()
+      hidden: true,
+      description:
+        "Legacy import order. Use the draggable CV Entries list on the CV Page instead."
     })
   ],
+  preview: {
+    select: {
+      title: "title",
+      category: "category",
+      organization: "organization",
+      date: "date"
+    },
+    prepare: ({ title, category, organization, date }) => ({
+      title: title || "Untitled CV entry",
+      subtitle: [category, organization, date].filter(Boolean).join(" | ")
+    })
+  },
   orderings: [
     {
       title: "Sort Order",
