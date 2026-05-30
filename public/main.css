@@ -462,15 +462,14 @@ nav ul>li a {
     .cv-page .cv-contact {
         font-size: 0.8em;
     }
+    #news .close-up-copy,
+    #bio .close-up-copy {
+        font-size: 1em;
+    }
 }
 
-#news .close-up-copy,
-#bio .close-up-copy {
-    font-size: 1em;
-}
-
-#writing em,
-#writing i {
+.cv-page em,
+.cv-page i {
     font-style: normal;
 }
 
