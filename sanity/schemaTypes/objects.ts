@@ -64,41 +64,43 @@ export const figure = defineType({
   ]
 });
 
+const richTextBlock = defineArrayMember({
+  type: "block",
+  styles: [{ title: "Normal", value: "normal" }],
+  lists: [],
+  marks: {
+    decorators: [
+      { title: "Italic", value: "em" },
+      { title: "Strong", value: "strong" }
+    ],
+    annotations: [
+      {
+        name: "link",
+        type: "object",
+        title: "Link",
+        fields: [
+          defineField({
+            name: "href",
+            type: "url",
+            validation: (rule) => rule.required()
+          }),
+          defineField({
+            name: "blank",
+            type: "boolean",
+            initialValue: false
+          })
+        ]
+      }
+    ]
+  }
+});
+
 export const portableText = defineType({
   name: "portableText",
   title: "Portable Text",
   type: "array",
   of: [
-    defineArrayMember({
-      type: "block",
-      styles: [{ title: "Normal", value: "normal" }],
-      lists: [],
-      marks: {
-        decorators: [
-          { title: "Italic", value: "em" },
-          { title: "Strong", value: "strong" }
-        ],
-        annotations: [
-          {
-            name: "link",
-            type: "object",
-            title: "Link",
-            fields: [
-              defineField({
-                name: "href",
-                type: "url",
-                validation: (rule) => rule.required()
-              }),
-              defineField({
-                name: "blank",
-                type: "boolean",
-                initialValue: false
-              })
-            ]
-          }
-        ]
-      }
-    }),
+    richTextBlock,
     defineArrayMember({
       type: "topicDivider",
       title: "Little Decal / Topic Divider"
@@ -109,6 +111,13 @@ export const portableText = defineType({
   ]
 });
 
+export const newsPostPortableText = defineType({
+  name: "newsPostPortableText",
+  title: "News Post Content",
+  type: "array",
+  of: [richTextBlock, defineArrayMember({ type: "figure" })]
+});
+
 export const newsPost = defineType({
   name: "newsPost",
   title: "News Post",
@@ -117,9 +126,9 @@ export const newsPost = defineType({
     defineField({
       name: "body",
       title: "Post content",
-      type: "portableText",
+      type: "newsPostPortableText",
       description:
-        "Write one full news post here. The diamond decal appears automatically between posts on the website.",
+        "Write one full news post here. The diamond decal appears automatically between posts on the website; do not add it inside the post.",
       validation: (rule) => rule.required()
     })
   ],

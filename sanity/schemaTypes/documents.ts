@@ -77,11 +77,11 @@ export const homePage = defineType({
     }),
     defineField({
       name: "posts",
-      title: "News Posts",
+      title: "Content",
       type: "array",
       of: [defineArrayMember({ type: "newsPost" })],
       description:
-        "Add one item per news post. Drag posts to reorder them; the diamond decal is added automatically between posts on the website.",
+        "Add one item per news post. Drag items to reorder them; the diamond decal is added automatically between items on the website.",
       options: {
         sortable: true
       }
@@ -91,9 +91,9 @@ export const homePage = defineType({
       title: "Legacy News Content",
       type: "portableText",
       description:
-        "Legacy imported content kept as a fallback. Edit News Posts above instead.",
-      hidden: ({ document }) =>
-        Array.isArray(document?.posts) && document.posts.length > 0
+        "Legacy imported content kept for migration only. Edit Content above instead.",
+      readOnly: true,
+      hidden: true
     })
   ]
 });

@@ -1,6 +1,7 @@
 import { getCliClient } from "sanity/cli";
 
 const client = getCliClient({ apiVersion: "2026-04-19" });
+const forceNewsFromContent = process.env.FORCE_NEWS_FROM_CONTENT === "1";
 
 const keyFrom = (prefix, value, index) => {
   const stable = String(value ?? "")
@@ -71,10 +72,14 @@ if (!cvPage) {
 const cvEntries = await client.fetch('*[_type == "cvEntry"] | order(sortOrder asc, _createdAt asc){_id}');
 const patches = [];
 
-if (!Array.isArray(homePage.posts) || homePage.posts.length === 0) {
+if (forceNewsFromContent || !Array.isArray(homePage.posts) || homePage.posts.length === 0) {
   const posts = splitNewsPosts(homePage.content ?? []);
   patches.push(client.patch(homePage._id).set({ posts }));
-  console.log(`Prepared ${posts.length} drag-sortable news posts.`);
+  console.log(
+    `Prepared ${posts.length} drag-sortable news posts${
+      forceNewsFromContent ? " from the current legacy content field" : ""
+    }.`
+  );
 } else {
   console.log(`Home Page already has ${homePage.posts.length} news posts. No news sync needed.`);
 }
